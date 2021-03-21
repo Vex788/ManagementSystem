@@ -25,4 +25,13 @@ MS Afina uses a number of open source projects to work properly:
 - [HTML] - no programming language
 - [MySQL] - standart for the database
 - [Twillio] - for sending SMS
+- [Start Bootstrap - SB Admin 2] - free boostrap tamplate
+- [Datatables] - must be
 - [jQuery] - due
+
+## Some Screenshots
+
+![Login page](https://github.com/Vex788/ManagementSystem/blob/main/ms%20afina/scr1.png?raw=true)
+![Dashboard](https://github.com/Vex788/ManagementSystem/blob/main/ms%20afina/scr2.png?raw=true)
+![Clients table](https://github.com/Vex788/ManagementSystem/blob/main/ms%20afina/scr3.png?raw=true)
+![Form for adding a new client](https://github.com/Vex788/ManagementSystem/blob/main/ms%20afina/scr4.png?raw=true)
