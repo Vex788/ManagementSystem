@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Trainer Analytics - Afina MS</title>
+
+    <!-- Custom fonts -->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Styles -->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="css/modern-style.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+<div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+            <div class="sidebar-brand-icon rotate-n-15">
+                <i class="fas fa-dumbbell"></i>
+            </div>
+            <div class="sidebar-brand-text mx-3">Afina MS</div>
+        </a>
+
+        <hr class="sidebar-divider my-0">
+
+        <li class="nav-item"><a class="nav-link" href="index.html">
+            <i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span>
+        </a></li>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-heading">Trainer</div>
+
+        <li class="nav-item"><a class="nav-link" href="trainer_schedule.html">
+            <i class="fas fa-fw fa-calendar-alt"></i> <span>Schedule Management</span>
+        </a></li>
+
+        <li class="nav-item active"><a class="nav-link" href="trainer_analytics.html">
+            <i class="fas fa-fw fa-chart-line"></i> <span>My Analytics</span>
+        </a></li>
+
+        <li class="nav-item"><a class="nav-link" href="trainer_clients.html">
+            <i class="fas fa-fw fa-users"></i> <span>My Clients</span>
+        </a></li>
+
+        <hr class="sidebar-divider d-none d-md-block">
+
+        <div class="text-center d-none d-md-inline">
+            <button class="rounded-circle border-0" id="sidebarToggle"></button>
+        </div>
+
+    </ul>
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <i class="fa fa-bars"></i>
+                </button>
+
+                <ul class="navbar-nav ml-auto">
+                    <div class="topbar-divider d-none d-sm-block"></div>
+                    <li class="nav-item dropdown no-arrow">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown">
+                            <span id="user-fname-lname" class="mr-2 d-none d-lg-inline text-gray-600 small"></span>
+                            <img class="img-profile rounded-circle" src="https://source.unsplash.com/QAB-WJcbgJk/60x60">
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                            <a class="dropdown-item" href="./logout" data-toggle="modal" data-target="#logoutModal">
+                                <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i> Logout
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+
+            </nav>
+
+            <!-- Page Content -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">Analytics & Statistics</h1>
+                    <select id="periodFilter" class="form-control w-auto ml-auto" onchange="updateAnalytics()">
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                        <option value="quarter">This Quarter</option>
+                        <option value="year">This Year</option>
+                    </select>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="row mb-4">
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-users"></i></div>
+                            <div class="stat-label">Total Sessions</div>
+                            <div class="stat-number" id="totalSessions">0</div>
+                            <p class="text-muted small mt-2">Completed sessions</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+                            <div class="stat-label">Active Clients</div>
+                            <div class="stat-number" id="activeClients">0</div>
+                            <p class="text-muted small mt-2">Regular clients</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-dollar-sign"></i></div>
+                            <div class="stat-label">Total Earnings</div>
+                            <div class="stat-number" id="totalEarnings">$0</div>
+                            <p class="text-muted small mt-2">Net earnings</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-star"></i></div>
+                            <div class="stat-label">Avg Rating</div>
+                            <div class="stat-number" id="avgRating">5.0</div>
+                            <p class="text-muted small mt-2">From clients</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="row mb-4">
+                    <!-- Earnings Chart -->
+                    <div class="col-lg-8">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Earnings Trend</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-area" style="height: 300px;">
+                                    <canvas id="earningsChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Types -->
+                    <div class="col-lg-4">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Session Types</h6>
+                            </div>
+                            <div class="card-body">
+                                <div style="position: relative; height: 300px;">
+                                    <canvas id="sessionTypesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detailed Statistics -->
+                <div class="row mb-4">
+                    <!-- Client Performance -->
+                    <div class="col-lg-6">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Top Performing Clients</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Client Name</th>
+                                                <th>Sessions</th>
+                                                <th>Total Spent</th>
+                                                <th>Progress</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="topClientsList">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Monthly Summary -->
+                    <div class="col-lg-6">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Monthly Summary</h6>
+                            </div>
+                            <div class="card-body">
+                                <div id="monthlySummary"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Export Options -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card shadow">
+                            <div class="card-header">
+                                <h6 class="m-0 font-weight-bold text-primary">Reports</h6>
+                            </div>
+                            <div class="card-body">
+                                <button class="btn btn-primary" onclick="exportPDF()">
+                                    <i class="fas fa-file-pdf"></i> Export as PDF
+                                </button>
+                                <button class="btn btn-success" onclick="exportExcel()">
+                                    <i class="fas fa-file-excel"></i> Export as Excel
+                                </button>
+                                <button class="btn btn-info" onclick="sendEmail()">
+                                    <i class="fas fa-envelope"></i> Send Report Email
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Afina MS 2024</span>
+                </div>
+            </div>
+        </footer>
+
+    </div>
+
+</div>
+
+<!-- Scroll to Top Button -->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Ready to Leave?</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" href="./logout">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="vendor/jquery/jquery.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="vendor/chart.js/Chart.min.js"></script>
+<script src="js/sb-admin-2.min.js"></script>
+
+<script>
+    let earningsChartInstance;
+    let sessionTypesChartInstance;
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadUserInfo();
+        updateAnalytics();
+    });
+
+    function loadUserInfo() {
+        fetch('/auth/current-user')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('user-fname-lname').textContent = data.firstName + ' ' + data.lastName;
+            });
+    }
+
+    function updateAnalytics() {
+        const period = document.getElementById('periodFilter').value;
+
+        fetch('/trainer/analytics?period=' + period)
+            .then(response => response.json())
+            .then(data => {
+                displayMetrics(data);
+                displayCharts(data);
+                displayTopClients(data.topClients);
+                displayMonthlySummary(data.monthlySummary);
+            });
+    }
+
+    function displayMetrics(data) {
+        document.getElementById('totalSessions').textContent = data.totalSessions;
+        document.getElementById('activeClients').textContent = data.activeClients;
+        document.getElementById('totalEarnings').textContent = '$' + data.totalEarnings.toFixed(2);
+        document.getElementById('avgRating').textContent = data.avgRating.toFixed(1);
+    }
+
+    function displayCharts(data) {
+        // Earnings Chart
+        if (earningsChartInstance) {
+            earningsChartInstance.destroy();
+        }
+
+        const earningsCtx = document.getElementById('earningsChart').getContext('2d');
+        earningsChartInstance = new Chart(earningsCtx, {
+            type: 'line',
+            data: {
+                labels: data.chartLabels,
+                datasets: [{
+                    label: 'Earnings ($)',
+                    data: data.earningsData,
+                    borderColor: '#667eea',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Session Types Chart
+        if (sessionTypesChartInstance) {
+            sessionTypesChartInstance.destroy();
+        }
+
+        const typesCtx = document.getElementById('sessionTypesChart').getContext('2d');
+        sessionTypesChartInstance = new Chart(typesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: data.sessionTypeLabels,
+                datasets: [{
+                    data: data.sessionTypeData,
+                    backgroundColor: ['#667eea', '#764ba2', '#f093fb', '#48bb78'],
+                    borderColor: '#fff',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    }
+
+    function displayTopClients(clients) {
+        const tbody = document.getElementById('topClientsList');
+        tbody.innerHTML = '';
+
+        clients.forEach(client => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${client.name}</td>
+                <td>${client.sessions}</td>
+                <td>$${client.totalSpent.toFixed(2)}</td>
+                <td><span class="badge badge-success">${client.progress}%</span></td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function displayMonthlySummary(summary) {
+        const container = document.getElementById('monthlySummary');
+        container.innerHTML = `
+            <div class="row no-gutters">
+                <div class="col-md-6 mb-3">
+                    <div class="font-weight-bold text-primary">Total Revenue</div>
+                    <div class="h5">$${summary.totalRevenue.toFixed(2)}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="font-weight-bold text-primary">Sessions Completed</div>
+                    <div class="h5">${summary.sessionsCompleted}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="font-weight-bold text-primary">New Clients</div>
+                    <div class="h5">${summary.newClients}</div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="font-weight-bold text-primary">Avg Session Value</div>
+                    <div class="h5">$${summary.avgSessionValue.toFixed(2)}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function exportPDF() {
+        alert('PDF export functionality coming soon!');
+    }
+
+    function exportExcel() {
+        alert('Excel export functionality coming soon!');
+    }
+
+    function sendEmail() {
+        alert('Email report functionality coming soon!');
+    }
+</script>
+
+</body>
+
+</html>

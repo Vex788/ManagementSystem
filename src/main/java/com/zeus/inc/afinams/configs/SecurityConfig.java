@@ -58,28 +58,51 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                // Enable CSRF protection for POST, PUT, DELETE requests
+                .csrf()
+                .ignoringAntMatchers("/scheduler/**", "/client/**", "/trainer/**")
+                .and()
+                // Security headers for XSS protection
+                .headers()
+                .xssProtection()
+                .and()
+                .contentSecurityPolicy("default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; font-src 'self' fonts.googleapis.com fonts.gstatic.com")
+                .and()
+                .and()
+                // Authorization configuration
                 .authorizeRequests()
+                .antMatchers("/login*", "/register*", "/css/**", "/js/**", "/vendor/**", "/img/**").permitAll()
                 .antMatchers(
                         "/admin/index.html", "/admin/administrators.html", "/admin/clients.html",
-                        "/admin/history_of_payments.html", "/admin/trainers.html"
-                ).hasAnyAuthority(UserRole.ADMIN.name(), UserRole.GOD.name())
+                        "/admin/history_of_payments.html", "/admin/trainers.html",
+                        "/admin/client_booking.html", "/admin/client_my_sessions.html",
+                        "/admin/trainer_schedule.html", "/admin/trainer_analytics.html", "/admin/trainer_clients.html"
+                ).hasAnyAuthority(UserRole.ADMIN.name(), UserRole.GOD.name(), "CLIENT", "TRAINER")
                 .antMatchers("/admin/god.html").hasAuthority(UserRole.GOD.name())
-                .anyRequest().permitAll();
-
-        http.httpBasic()
-                .and().authenticationProvider(authenticationProvider());
-
-        // --- login on admin page ---
-        http.oauth2Login()
+                .antMatchers("/api/**").authenticated()
+                .anyRequest().permitAll()
+                .and()
+                // HTTP Basic authentication
+                .httpBasic()
+                .and().authenticationProvider(authenticationProvider())
+                // OAuth2 Login configuration
+                .and()
+                .oauth2Login()
                 .loginPage("/login.html")
                 .successHandler(authenticationSuccessHandler)
                 .and()
+                // Logout configuration
                 .logout()
                 .logoutUrl("/logout")
                 .deleteCookies("JSESSIONID")
-                .logoutSuccessUrl("/");
-
-        http.sessionManagement().maximumSessions(2).expiredUrl("/too-many-sessions");
+                .logoutSuccessUrl("/")
+                .and()
+                // Session management
+                .sessionManagement()
+                .maximumSessions(2)
+                .expiredUrl("/too-many-sessions")
+                .and()
+                .sessionFixationProtection()
+                .migrateSession();
     }
 }
